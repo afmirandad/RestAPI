@@ -16,7 +16,10 @@ db_host = os.getenv("DB_HOST")
 db_port = os.getenv("DB_PORT", "3306")
 db_name = os.getenv("DB_NAME")
 
-DATABASE_URL = f"mysql+pymysql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
+from urllib.parse import quote_plus
+safe_password = quote_plus(db_password)
+
+DATABASE_URL = f"mysql+pymysql://{db_user}:{safe_password}@{db_host}:{db_port}/{db_name}"
 engine = create_engine(DATABASE_URL)
 Base.metadata.create_all(engine)
 
@@ -34,5 +37,3 @@ app.register_blueprint(departments_bp, url_prefix='/departments')
 app.register_blueprint(jobs_bp, url_prefix='/jobs')
 app.register_blueprint(hired_employees_bp, url_prefix='/hiredemployees')
 app.register_blueprint(rootpath)
-
-
