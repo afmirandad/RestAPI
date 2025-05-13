@@ -48,14 +48,17 @@ class HiredEmployeesService:
             self.session.query(
                 Department.name.label("department"),
                 Job.name.label("job"),
-                ((func.strftime('%m', HiredEmployee.hire_date).cast(Integer) - 1) / 3 + 1).label("quarter"),
+                ((extract('month', HiredEmployee.hire_date) - 1) / 3 + 1).label("quarter"),
                 func.count(HiredEmployee.id).label("hires")
             )
             .join(Department, HiredEmployee.department_id == Department.id)
             .join(Job, HiredEmployee.job_id == Job.id)
-            .filter(func.strftime('%Y', HiredEmployee.hire_date) == '2021')
-            .group_by(Department.name, Job.name,
-                      (func.strftime('%m', HiredEmployee.hire_date).cast(Integer) - 1) / 3 + 1)
+            .filter(extract('year', HiredEmployee.hire_date) == 2021)
+            .group_by(
+                Department.name,
+                Job.name,
+                ((extract('month', HiredEmployee.hire_date) - 1) / 3 + 1)
+            )
             .order_by(Department.name.asc(), Job.name.asc())
             .all()
         )
@@ -68,7 +71,7 @@ class HiredEmployeesService:
                 HiredEmployee.department_id,
                 func.count(HiredEmployee.id).label("num_hired")
             )
-            .filter(func.strftime('%Y', HiredEmployee.hire_date) == '2021')
+            .filter(extract('year', HiredEmployee.hire_date) == 2021)
             .group_by(HiredEmployee.department_id)
             .subquery()
         )
