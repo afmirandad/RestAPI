@@ -8,12 +8,16 @@ from controllers.DepartmentsController import init_departments_controller, depar
 from controllers.JobsController import init_jobs_controller, jobs_bp
 from controllers.HiredEmployeesController import init_hired_employees_controller, hired_employees_bp
 from controllers.root import rootpath
-from dotenv import load_dotenv
 import os
 
-load_dotenv()
+db_user = os.getenv("DB_USER")
+db_password = os.getenv("DB_PASSWORD")
+db_host = os.getenv("DB_HOST")
+db_port = os.getenv("DB_PORT", "3306")
+db_name = os.getenv("DB_NAME")
 
-engine = create_engine("sqlite:///data/employees.db")
+DATABASE_URL = f"mysql+pymysql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
+engine = create_engine(DATABASE_URL)
 Base.metadata.create_all(engine)
 
 department_service = DepartmentService(engine)
