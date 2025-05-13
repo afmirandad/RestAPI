@@ -13,7 +13,7 @@ import os
 
 load_dotenv()
 
-engine = create_engine("sqlite:data/employees.db")
+engine = create_engine("sqlite:///data/employees.db")
 Base.metadata.create_all(engine)
 
 department_service = DepartmentService(engine)
@@ -33,3 +33,5 @@ app.register_blueprint(rootpath)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)
+
+
